@@ -1,0 +1,2 @@
+# spellcheck
+Package npm / bun (🟥)
