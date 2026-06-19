@@ -86,7 +86,7 @@ const { checkText } = require("fixnow");
 - `SUPPORTED_LANGUAGES`, `LANGUAGES`, `isSupportedLanguage`
 
 **`CheckOptions`:** `language` (default `'es'`), `strict` (Spanish accent strictness),
-`suggestions`, `maxSuggestions` (5), `minWordLength` (3), `ignoreWords`, `isProtectedWord`.
+`suggestions`, `maxSuggestions` (5), `minWordLength` (3), `ignoreWords`, `flagWords`, `isProtectedWord`.
 
 ## License
 
