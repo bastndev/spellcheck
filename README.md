@@ -24,6 +24,8 @@
 </p>
 </div>
 
+<br>
+
 A tiny multilingual spell checker with correction suggestions. Dictionaries are bundled, so `npm i fixnow` gives you everything — with **zero runtime dependencies**, in both ESM and CommonJS.
 
 ## Install
