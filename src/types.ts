@@ -12,11 +12,19 @@ export interface SpellIssue {
 }
 
 export interface CheckOptions {
-  /** Dictionary to check against. Defaults to `'es'`. */
-  language?: LanguageCode;
+  /** Dictionary to check against. Required. */
+  language: LanguageCode;
+  /** When true, dictionary lookups are case-sensitive. Default: false. */
+  caseSensitive?: boolean;
   /**
-   * Spanish only: when true, accent omissions (e.g. "codigo" for "código") are
-   * flagged. When false (default) they are accepted as harmless.
+   * Spanish-specific. When true, words missing an acute accent
+   * (e.g. "codigo" for "código") are accepted as correct. Default: false.
+   * No effect for any other language.
+   */
+  acceptAccentOmissions?: boolean;
+  /**
+   * @deprecated Removed in 3.0.0. Use `caseSensitive` and
+   * `acceptAccentOmissions` instead.
    */
   strict?: boolean;
   /** Attach correction suggestions to every issue. Defaults to false. */
@@ -35,6 +43,22 @@ export interface CheckOptions {
   flagWords?: Iterable<string>;
   /** Custom predicate to skip a word before it is checked (e.g. protected terms). */
   isProtectedWord?: (word: string) => boolean;
+  /**
+   * Override or disable the protected-segment tokenizer pattern. See
+   * `tokenize` for details. Defaults to the bundled default pattern.
+   */
+  protectedSegments?: RegExp | RegExp[] | false;
+}
+
+/** Options for `isCorrect` / bound checker `isCorrect`. */
+export interface IsCorrectOptions {
+  /** When true, dictionary lookups are case-sensitive. Default: false. */
+  caseSensitive?: boolean;
+  /**
+   * Spanish-specific. When true, words missing an acute accent are accepted
+   * as correct. Default: false. No effect for any other language.
+   */
+  acceptAccentOmissions?: boolean;
 }
 
 /** A loaded, decoded dictionary. Membership and suggestion lookups are synchronous. */

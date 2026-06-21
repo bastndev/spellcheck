@@ -2,30 +2,31 @@ import { loadDictionary } from './dictionary';
 import { isAccepted } from './lang';
 import type { LanguageCode } from './languages';
 import { tokenize } from './tokenize';
-import type { CheckOptions, Dictionary, SpellIssue } from './types';
+import type { CheckOptions, Dictionary, IsCorrectOptions, SpellIssue } from './types';
 
-const DEFAULT_LANGUAGE: LanguageCode = 'es';
 const DEFAULT_MIN_WORD_LENGTH = 3;
 const DEFAULT_MAX_SUGGESTIONS = 5;
 
-// Dictionary verdicts are deterministic per (language, strict, exact word), so
-// we memoize them across calls. This matters for an editor that re-checks the
-// same words on every keystroke. Bounded with simple FIFO eviction.
+// Dictionary verdicts are deterministic per (language, caseSensitive,
+// acceptAccentOmissions, exact word), so we memoize them across calls. This
+// matters for an editor that re-checks the same words on every keystroke.
+// Bounded with simple FIFO eviction.
 const MAX_VERDICT_CACHE = 5000;
 const verdictCache = new Map<string, boolean>();
 
 function acceptedVerdict(
   word: string,
   language: LanguageCode,
-  strict: boolean,
+  caseSensitive: boolean,
+  acceptAccentOmissions: boolean,
   dict: Dictionary,
 ): boolean {
   // Key on the exact word — case is significant in some languages (German nouns).
-  const key = `${language}:${strict ? 1 : 0}:${word}`;
+  const key = `${language}:${caseSensitive ? 1 : 0}:${acceptAccentOmissions ? 1 : 0}:${word}`;
   const cached = verdictCache.get(key);
   if (cached !== undefined) return cached;
 
-  const accepted = isAccepted(word, language, dict, strict);
+  const accepted = isAccepted(word, language, dict, caseSensitive, acceptAccentOmissions);
   if (verdictCache.size >= MAX_VERDICT_CACHE) {
     const oldest = verdictCache.keys().next().value;
     if (oldest !== undefined) verdictCache.delete(oldest);
@@ -34,13 +35,45 @@ function acceptedVerdict(
   return accepted;
 }
 
+let strictDeprecationWarned = false;
+
+function resolveStrictness(options: {
+  caseSensitive?: boolean;
+  acceptAccentOmissions?: boolean;
+  strict?: boolean;
+  language?: LanguageCode;
+}): { caseSensitive: boolean; acceptAccentOmissions: boolean } {
+  let caseSensitive = options.caseSensitive;
+  let acceptAccentOmissions = options.acceptAccentOmissions;
+
+  if ('strict' in options && options.strict !== undefined) {
+    if (!strictDeprecationWarned && process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[fixnow] `strict` is deprecated; use `caseSensitive` and `acceptAccentOmissions` instead.',
+      );
+      strictDeprecationWarned = true;
+    }
+    // Legacy semantics: strict===true behaved like the new defaults
+    // (case-insensitive, no accent leniency); strict===false enabled Spanish
+    // accent leniency.
+    caseSensitive ??= false;
+    acceptAccentOmissions ??= options.strict === false && options.language === 'es';
+  }
+
+  return {
+    caseSensitive: caseSensitive ?? false,
+    acceptAccentOmissions: acceptAccentOmissions ?? false,
+  };
+}
+
 /** Finds misspelled words in `text` for the given language. */
-export async function checkText(text: string, options: CheckOptions = {}): Promise<SpellIssue[]> {
+export async function checkText(text: string, options: CheckOptions): Promise<SpellIssue[]> {
   if (!text || text.trim().length < 2) return [];
 
-  const language = options.language ?? DEFAULT_LANGUAGE;
+  const { language } = options;
   const minWordLength = options.minWordLength ?? DEFAULT_MIN_WORD_LENGTH;
-  const strict = options.strict ?? false;
+  const { caseSensitive, acceptAccentOmissions } = resolveStrictness(options);
   const withSuggestions = options.suggestions ?? false;
   const maxSuggestions = options.maxSuggestions ?? DEFAULT_MAX_SUGGESTIONS;
   const ignore = toLowerSet(options.ignoreWords);
@@ -56,7 +89,7 @@ export async function checkText(text: string, options: CheckOptions = {}): Promi
   };
 
   const issues: SpellIssue[] = [];
-  for (const { word, offset } of tokenize(text)) {
+  for (const { word, offset } of tokenize(text, options.protectedSegments)) {
     const lower = word.toLowerCase();
 
     // Allowlist wins over everything else.
@@ -71,7 +104,7 @@ export async function checkText(text: string, options: CheckOptions = {}): Promi
     }
 
     if (word.length < minWordLength) continue;
-    if (acceptedVerdict(word, language, strict, dict)) continue;
+    if (acceptedVerdict(word, language, caseSensitive, acceptAccentOmissions, dict)) continue;
 
     issues.push(makeIssue(word, offset));
   }
@@ -82,11 +115,12 @@ export async function checkText(text: string, options: CheckOptions = {}): Promi
 /** Whether a single word is correctly spelled in the given language. */
 export async function isCorrect(
   word: string,
-  language: LanguageCode = DEFAULT_LANGUAGE,
-  strict = false,
+  language: LanguageCode,
+  options: IsCorrectOptions & { strict?: boolean } = {},
 ): Promise<boolean> {
   const dict = await loadDictionary(language);
-  return acceptedVerdict(word, language, strict, dict);
+  const { caseSensitive, acceptAccentOmissions } = resolveStrictness({ ...options, language });
+  return acceptedVerdict(word, language, caseSensitive, acceptAccentOmissions, dict);
 }
 
 function toLowerSet(words: Iterable<string> | undefined): Set<string> | undefined {

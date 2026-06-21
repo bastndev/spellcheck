@@ -1,6 +1,6 @@
 {
   "name": "fixnow",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Tiny multilingual spell checker with suggestions. Arabic, German, English, Spanish, French, Portuguese, Russian and Vietnamese dictionaries bundled — one install, zero runtime dependencies.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -15,6 +15,86 @@
       "require": {
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
+      }
+    },
+    "./ar": {
+      "import": {
+        "types": "./dist/ar.d.ts",
+        "default": "./dist/ar.js"
+      },
+      "require": {
+        "types": "./dist/ar.d.cts",
+        "default": "./dist/ar.cjs"
+      }
+    },
+    "./de": {
+      "import": {
+        "types": "./dist/de.d.ts",
+        "default": "./dist/de.js"
+      },
+      "require": {
+        "types": "./dist/de.d.cts",
+        "default": "./dist/de.cjs"
+      }
+    },
+    "./en": {
+      "import": {
+        "types": "./dist/en.d.ts",
+        "default": "./dist/en.js"
+      },
+      "require": {
+        "types": "./dist/en.d.cts",
+        "default": "./dist/en.cjs"
+      }
+    },
+    "./es": {
+      "import": {
+        "types": "./dist/es.d.ts",
+        "default": "./dist/es.js"
+      },
+      "require": {
+        "types": "./dist/es.d.cts",
+        "default": "./dist/es.cjs"
+      }
+    },
+    "./fr": {
+      "import": {
+        "types": "./dist/fr.d.ts",
+        "default": "./dist/fr.js"
+      },
+      "require": {
+        "types": "./dist/fr.d.cts",
+        "default": "./dist/fr.cjs"
+      }
+    },
+    "./pt": {
+      "import": {
+        "types": "./dist/pt.d.ts",
+        "default": "./dist/pt.js"
+      },
+      "require": {
+        "types": "./dist/pt.d.cts",
+        "default": "./dist/pt.cjs"
+      }
+    },
+    "./ru": {
+      "import": {
+        "types": "./dist/ru.d.ts",
+        "default": "./dist/ru.js"
+      },
+      "require": {
+        "types": "./dist/ru.d.cts",
+        "default": "./dist/ru.cjs"
+      }
+    },
+    "./vi": {
+      "import": {
+        "types": "./dist/vi.d.ts",
+        "default": "./dist/vi.js"
+      },
+      "require": {
+        "types": "./dist/vi.d.cts",
+        "default": "./dist/vi.cjs"
       }
     }
   },
