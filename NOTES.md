@@ -55,6 +55,21 @@ Publishes the package to npm.
 
 ---
 
+<br>
+<br>
+<br>
+<br
+
+##  
+
+# Update 
+
+```bash
+npm version patch; git push --follow-tags; npm publish
+```
+
+<br>
+
 ## Update version (Bug fix)
 
 ```bash
