@@ -37,11 +37,11 @@
 
 ## Features
 
-- **Zero Dependencies** — Keeps your `node_modules` clean and lightweight.
-- **Built-in Dictionaries** — Includes Arabic, German, English, Spanish, French, Portuguese, Russian, and Vietnamese.
-- **Slim Builds** — Import only the language you need (e.g. `import { check } from "fixnow/es"`) to optimize bundle size.
-- **Smart Tokenization** — Automatically ignores code spans, URLs, emails, and identifiers to prevent false positives.
-- **Universal** — Works seamlessly in both ESM and CommonJS projects.
+- 📦 **Zero Dependencies** — Keeps your `node_modules` clean and lightweight.
+- 🌍 **Built-in Dictionaries** — Includes Arabic, German, English, Spanish, French, Portuguese, Russian, and Vietnamese.
+- ⚡ **Slim Builds** — Import only the language you need (e.g. `import { check } from "fixnow/es"`) to optimize bundle size.
+- 🛡️ **Smart Tokenization** — Automatically ignores code spans, URLs, emails, and identifiers to prevent false positives.
+- 🧩 **Universal** — Works seamlessly in both ESM and CommonJS projects.
 
 ## Architecture
 
@@ -124,7 +124,7 @@ const { checkText } = require("fixnow");
 (false; Spanish only), `suggestions`, `maxSuggestions` (5), `minWordLength` (3),
 `ignoreWords`, `flagWords`, `isProtectedWord`, `protectedSegments`.
 
-### 🛡️ Tokenization
+### Tokenization
 
 `checkText` skips anything inside a "protected segment" (code spans, URLs, emails, paths,
 CLI flags, hex colors, ACRONYMS, file names and dotted identifiers). Override the
@@ -148,7 +148,7 @@ await checkText(text, { language: "en", protectedSegments: false });
 
 The same option is exposed on `tokenize(text, protectedSegments)`.
 
-### ⚡ Slim Builds
+### Slim Builds
 
 If you only need one language, import it via the language subpath. Your bundler only
 copies the dictionary you actually use:
@@ -163,7 +163,7 @@ await suggest("bonjoor", 3); // bound suggest is (word, max?)
 The slim entries (`fixnow/ar`, `fixnow/de`, `fixnow/en`, `fixnow/es`, `fixnow/fr`,
 `fixnow/pt`, `fixnow/ru`, `fixnow/vi`) re-export a checker pre-bound to that language.
 
-## 📦 Bundling
+## Bundling
 
 fixnow reads its dictionaries from disk at runtime — they ship as files under
 `node_modules/fixnow/dictionaries/`, not as inlined bytes in the JS. So any bundler
@@ -189,7 +189,7 @@ The matching option for other bundlers:
 - **Rollup** — `external: ['fixnow']`
 - **webpack** — `externals: { fixnow: 'commonjs fixnow' }`
 
-## 🔄 Migrating from 1.x
+## Migrating from 1.x
 
 `2.0.0` cleans up three rough edges from the extraction-from-F1 release. Each is a
 breaking change:
