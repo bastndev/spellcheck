@@ -59,10 +59,18 @@ npm i fixnow
 ```ts
 import { checkText, suggest, createChecker } from "fixnow";
 
-// Detect misspellings (defaults to Spanish)
-const issues = await checkText("Esto es un herror", {
+// English
+const enIssues = await checkText("This sentance has a typo", {
+  language: "en",
+  suggestions: true,
+});
+// -> [{ offset: 5, length: 8, word: 'sentance', suggestions: [...] }]
+
+// Spanish — opt in to accent leniency if you don't want "codigo" flagged.
+const esIssues = await checkText("Esto es un herror", {
   language: "es",
   suggestions: true,
+  acceptAccentOmissions: true,
 });
 // -> [{ offset: 11, length: 6, word: 'herror', suggestions: [...] }]
 
@@ -82,15 +90,89 @@ const { checkText } = require("fixnow");
 
 ### API
 
-- `checkText(text, options?)` → `Promise<SpellIssue[]>`
-- `isCorrect(word, language?, strict?)` → `Promise<boolean>`
-- `suggest(word, { language?, max? })` → `Promise<string[]>`
+- `checkText(text, options)` → `Promise<SpellIssue[]>`
+- `isCorrect(word, language, options?)` → `Promise<boolean>`
+- `suggest(word, { language, max? })` → `Promise<string[]>`
 - `createChecker(language)` → bound `{ check, suggest, isCorrect, warmup }`
 - `warmup(language?)` — preload dictionaries (skip first-call decode cost)
+- `tokenize(text, protectedSegments?)`, `DEFAULT_PROTECTED_PATTERN`
 - `SUPPORTED_LANGUAGES`, `LANGUAGES`, `isSupportedLanguage`
 
-**`CheckOptions`:** `language` (default `'es'`), `strict` (Spanish accent strictness),
-`suggestions`, `maxSuggestions` (5), `minWordLength` (3), `ignoreWords`, `flagWords`, `isProtectedWord`.
+**`CheckOptions`:** `language` (required), `caseSensitive` (false), `acceptAccentOmissions`
+(false; Spanish only), `suggestions`, `maxSuggestions` (5), `minWordLength` (3),
+`ignoreWords`, `flagWords`, `isProtectedWord`, `protectedSegments`.
+
+### Tokenization
+
+`checkText` skips anything inside a "protected segment" (code spans, URLs, emails, paths,
+CLI flags, hex colors, ACRONYMS, file names and dotted identifiers). Override the
+patterns with `protectedSegments`:
+
+```ts
+import { checkText, DEFAULT_PROTECTED_PATTERN } from "fixnow";
+
+// Use only your own pattern
+await checkText(text, { language: "en", protectedSegments: /\{\{[^}]+\}\}/g });
+
+// Compose with the default
+await checkText(text, {
+  language: "en",
+  protectedSegments: [DEFAULT_PROTECTED_PATTERN, /\{\{[^}]+\}\}/g],
+});
+
+// Disable protection entirely
+await checkText(text, { language: "en", protectedSegments: false });
+```
+
+The same option is exposed on `tokenize(text, protectedSegments)`.
+
+### Slim builds
+
+If you only need one language, import it via the language subpath. Your bundler only
+copies the dictionary you actually use:
+
+```ts
+import { check, suggest } from "fixnow/es";
+
+const issues = await check("Esto es un herror", { suggestions: true });
+await suggest("bonjoor", 3); // bound suggest is (word, max?)
+```
+
+The slim entries (`fixnow/ar`, `fixnow/de`, `fixnow/en`, `fixnow/es`, `fixnow/fr`,
+`fixnow/pt`, `fixnow/ru`, `fixnow/vi`) re-export a checker pre-bound to that language.
+
+## Migrating from 1.x
+
+`2.0.0` cleans up three rough edges from the extraction-from-F1 release. Each is a
+breaking change:
+
+- **`language` is now required.** There is no default language anymore.
+  ```ts
+  // before
+  await checkText("hola"); // implicitly Spanish
+  // after
+  await checkText("hola", { language: "es" });
+  ```
+- **`strict` is split into `caseSensitive` and `acceptAccentOmissions`.** The new
+  default is strict (the old `strict: true`). If you relied on `strict: false` to
+  tolerate Spanish accent omissions, opt in explicitly:
+  ```ts
+  // before
+  await checkText("codigo", { language: "es" }); // accepted
+  // after
+  await checkText("codigo", { language: "es", acceptAccentOmissions: true });
+  ```
+  The legacy `strict` key still works in 2.x with a `console.warn`; it is removed in `3.0.0`.
+- **F1-specific markers are gone from the default tokenizer.** `[Image #1]`, `[Skills #…]`,
+  `/skills #N`, and `/skill` no longer auto-skip. If you need them, pass them via
+  `protectedSegments`:
+  ```ts
+  const F1_MARKERS = /\[(?:Image|Code|Text) #\d+[^\]\n]*\]|\[Skills? #[^\]\n]+\]|\/skills #\d+|\/skill\b/g;
+  await checkText(text, {
+    language: "en",
+    protectedSegments: [DEFAULT_PROTECTED_PATTERN, F1_MARKERS],
+  });
+  ```
 
 ## License
 

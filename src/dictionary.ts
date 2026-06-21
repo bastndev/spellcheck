@@ -7,9 +7,9 @@ import type { ITrie } from 'cspell-trie-lib';
 import { LANGUAGES, SUPPORTED_LANGUAGES, isSupportedLanguage, type LanguageCode } from './languages';
 import type { Dictionary } from './types';
 
-// The built entry (dist/index.{js,cjs}) sits one level below the package root,
-// where the `dictionaries/` folder is shipped. tsup's `shims` option makes
-// import.meta.url resolve correctly in both the ESM and CJS outputs.
+// Each built entry (dist/index.{js,cjs}, dist/es.{js,cjs}, …) sits one level
+// below the package root, where the `dictionaries/` folder is shipped. tsup's
+// `shims` option makes import.meta.url resolve correctly in both ESM and CJS.
 const PACKAGE_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 class TrieDictionary implements Dictionary {
@@ -29,7 +29,15 @@ class TrieDictionary implements Dictionary {
   }
 }
 
-const cache = new Map<LanguageCode, Promise<Dictionary>>();
+// Share the dictionary cache across every bundled copy of this module, so a
+// consumer who imports both `fixnow` and `fixnow/es` pays the trie decode cost
+// once. Per-bundle module state would otherwise force a re-decode per entry.
+const CACHE_SYMBOL = Symbol.for('fixnow.dictionaryCache.v2');
+const globalRegistry = globalThis as {
+  [k: symbol]: Map<LanguageCode, Promise<Dictionary>> | undefined;
+};
+const cache: Map<LanguageCode, Promise<Dictionary>> =
+  globalRegistry[CACHE_SYMBOL] ?? (globalRegistry[CACHE_SYMBOL] = new Map());
 
 /** Loads and decodes a language dictionary, caching the result. */
 export function loadDictionary(language: LanguageCode): Promise<Dictionary> {

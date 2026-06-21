@@ -9,11 +9,11 @@ const ENCLITICS = [
 ];
 
 const ACUTE_ACCENT: Record<string, string> = {
-  a: 'á', // á
-  e: 'é', // é
-  i: 'í', // í
-  o: 'ó', // ó
-  u: 'ú', // ú
+  a: 'á',
+  e: 'é',
+  i: 'í',
+  o: 'ó',
+  u: 'ú',
 };
 
 function deaccent(value: string): string {
@@ -62,14 +62,29 @@ function isEncliticVerb(lowerWord: string, dict: Dictionary): boolean {
 }
 
 /**
- * Spanish-aware acceptance. In lenient mode (default) accent omissions are
- * tolerated; in strict mode only exact dictionary forms (and enclitic verbs)
- * are accepted.
+ * Spanish-aware acceptance.
+ *
+ * - `caseSensitive`: when true, only the exact-case form is consulted; when
+ *   false, the lowercased form is also tried.
+ * - `acceptAccentOmissions`: when true, "codigo" is accepted because "código"
+ *   is in the dictionary; when false (the default), accent omissions are
+ *   flagged.
+ *
+ * Enclitic verb forms (e.g. "corregirme") are always accepted because the
+ * dictionary is known to be incomplete in that area.
  */
-export function acceptSpanish(word: string, dict: Dictionary, strict: boolean): boolean {
+export function acceptSpanish(
+  word: string,
+  dict: Dictionary,
+  caseSensitive: boolean,
+  acceptAccentOmissions: boolean,
+): boolean {
   const lower = word.toLowerCase();
-  const inDictionary = strict
-    ? dict.has(word) || dict.has(lower)
-    : dict.has(word) || matchesIgnoringAccents(lower, dict);
+  const inDictionary = caseSensitive
+    ? dict.has(word) ||
+      (acceptAccentOmissions && word === lower && matchesIgnoringAccents(lower, dict))
+    : acceptAccentOmissions
+      ? dict.has(word) || matchesIgnoringAccents(lower, dict)
+      : dict.has(word) || dict.has(lower);
   return inDictionary || isEncliticVerb(lower, dict);
 }
