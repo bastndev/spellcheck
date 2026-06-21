@@ -14,34 +14,42 @@
 <a href="https://github.com/bastndev/fixnow/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/npm/l/fixnow.svg?style=for-the-badge&color=ef4444&labelColor=18181b"></a>
 <a href="https://github.com/bastndev/fixnow/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/bastndev/fixnow.svg?style=for-the-badge&logo=github&color=ef4444&labelColor=18181b"></a>
 
-<h1></h1>
+<br>
 
 <p align="center">
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ES.md">Español 🇪🇸</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ZH.md">中文 🇨🇳</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_DE.md">Deutsch 🇩🇪</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_FR.md">Français 🇫🇷</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_JA.md">日本語 🇯🇵</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_KO.md">한국어 🇰🇷</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_PT.md">Português 🇧🇷</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_RU.md">Русский 🇷🇺</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_VI.md">Tiếng Việt 🇻🇳</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_AR.md">العربية 🇸🇦</a> |
-  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_HI.md">हिन्दी 🇮🇳</a><span>...</span>
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ES.md">Español 🇪🇸</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ZH.md">中文 🇨🇳</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_DE.md">Deutsch 🇩🇪</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_FR.md">Français 🇫🇷</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_JA.md">日本語 🇯🇵</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_KO.md">한국어 🇰🇷</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_PT.md">Português 🇧🇷</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_RU.md">Русский 🇷🇺</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_VI.md">Tiếng Việt 🇻🇳</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_AR.md">العربية 🇸🇦</a> •
+  <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_HI.md">हिन्दी 🇮🇳</a>
 </p>
 </div>
 
 <br>
 
-A tiny multilingual spell checker with correction suggestions. Dictionaries are bundled, so `npm i fixnow` gives you everything — with **zero runtime dependencies**, in both ESM and CommonJS.
+> A tiny multilingual spell checker with correction suggestions. Dictionaries are bundled, so `npm i fixnow` gives you everything — with **zero runtime dependencies**, in both ESM and CommonJS.
 
-## Install
+## ✨ Features
+
+- 📦 **Zero Dependencies** — Keeps your `node_modules` clean and lightweight.
+- 🌍 **Built-in Dictionaries** — Includes Arabic, German, English, Spanish, French, Portuguese, Russian, and Vietnamese.
+- ⚡ **Slim Builds** — Import only the language you need (e.g. `import { check } from "fixnow/es"`) to optimize bundle size.
+- 🛡️ **Smart Tokenization** — Automatically ignores code spans, URLs, emails, and identifiers to prevent false positives.
+- 🧩 **Universal** — Works seamlessly in both **ESM** and **CommonJS** projects.
+
+## 🚀 Install
 
 ```bash
 npm i fixnow
 ```
 
-## Languages
+## 🌍 Languages
 
 | Code | Language   | Dictionary license |
 | ---- | ---------- | ------------------ |
@@ -54,7 +62,7 @@ npm i fixnow
 | `ru` | Russian    | GPL-3.0-or-later   |
 | `vi` | Vietnamese | MIT                |
 
-## Usage
+## 💻 Usage
 
 ```ts
 import { checkText, suggest, createChecker } from "fixnow";
@@ -88,7 +96,7 @@ CommonJS works too:
 const { checkText } = require("fixnow");
 ```
 
-### API
+### 📖 API
 
 - `checkText(text, options)` → `Promise<SpellIssue[]>`
 - `isCorrect(word, language, options?)` → `Promise<boolean>`
@@ -102,7 +110,7 @@ const { checkText } = require("fixnow");
 (false; Spanish only), `suggestions`, `maxSuggestions` (5), `minWordLength` (3),
 `ignoreWords`, `flagWords`, `isProtectedWord`, `protectedSegments`.
 
-### Tokenization
+### 🛡️ Tokenization
 
 `checkText` skips anything inside a "protected segment" (code spans, URLs, emails, paths,
 CLI flags, hex colors, ACRONYMS, file names and dotted identifiers). Override the
@@ -126,7 +134,7 @@ await checkText(text, { language: "en", protectedSegments: false });
 
 The same option is exposed on `tokenize(text, protectedSegments)`.
 
-### Slim builds
+### ⚡ Slim Builds
 
 If you only need one language, import it via the language subpath. Your bundler only
 copies the dictionary you actually use:
@@ -141,7 +149,7 @@ await suggest("bonjoor", 3); // bound suggest is (word, max?)
 The slim entries (`fixnow/ar`, `fixnow/de`, `fixnow/en`, `fixnow/es`, `fixnow/fr`,
 `fixnow/pt`, `fixnow/ru`, `fixnow/vi`) re-export a checker pre-bound to that language.
 
-## Bundling
+## 📦 Bundling
 
 fixnow reads its dictionaries from disk at runtime — they ship as files under
 `node_modules/fixnow/dictionaries/`, not as inlined bytes in the JS. So any bundler
@@ -167,7 +175,7 @@ The matching option for other bundlers:
 - **Rollup** — `external: ['fixnow']`
 - **webpack** — `externals: { fixnow: 'commonjs fixnow' }`
 
-## Migrating from 1.x
+## 🔄 Migrating from 1.x
 
 `2.0.0` cleans up three rough edges from the extraction-from-F1 release. Each is a
 breaking change:
@@ -200,6 +208,6 @@ breaking change:
   });
   ```
 
-## License
+## 📄 License
 
 [MIT](./LICENSE)
