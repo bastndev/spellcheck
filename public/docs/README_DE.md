@@ -1,7 +1,6 @@
 <div align="center">
-  <a href="https://github.com/bastndev/fixnow">
-    <img alt="fixnow logo" src="https://raw.githubusercontent.com/bastndev/fixnow/main/public/github/banner.webp" height="128">
-  </a>
+
+[![Lynx Theme Pro](https://raw.githubusercontent.com/bastndev/fixnow/refs/heads/main/public/banner.webp)](https://www.gohit.xyz/package/fixnow)
 
 <br>
 
@@ -14,9 +13,9 @@
 <a href="https://github.com/bastndev/fixnow/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/npm/l/fixnow.svg?style=for-the-badge&color=ef4444&labelColor=18181b"></a>
 <a href="https://github.com/bastndev/fixnow/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/bastndev/fixnow.svg?style=for-the-badge&logo=github&color=ef4444&labelColor=18181b"></a>
 
-<br>
+<h1></h1>
 
-<p align="center">
+<p >
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ES.md">Español 🇪🇸</a> |
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ZH.md">中文 🇨🇳</a> |
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_DE.md">Deutsch 🇩🇪</a> |
@@ -29,6 +28,7 @@
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_HI.md">हिन्दी 🇮🇳</a> |
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_AR.md">العربية 🇸🇦</a><span>...</span>
 </p>
+
 </div>
 
 <br>
