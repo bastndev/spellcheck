@@ -16,8 +16,6 @@
 
 <h1></h1>
 
-<br>
-
 <p align="center">
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ES.md">Español 🇪🇸</a> |
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ZH.md">中文 🇨🇳</a> |
@@ -217,7 +215,8 @@ breaking change:
   `/skills #N`, and `/skill` no longer auto-skip. If you need them, pass them via
   `protectedSegments`:
   ```ts
-  const F1_MARKERS = /\[(?:Image|Code|Text) #\d+[^\]\n]*\]|\[Skills? #[^\]\n]+\]|\/skills #\d+|\/skill\b/g;
+  const F1_MARKERS =
+    /\[(?:Image|Code|Text) #\d+[^\]\n]*\]|\[Skills? #[^\]\n]+\]|\/skills #\d+|\/skill\b/g;
   await checkText(text, {
     language: "en",
     protectedSegments: [DEFAULT_PROTECTED_PATTERN, F1_MARKERS],
