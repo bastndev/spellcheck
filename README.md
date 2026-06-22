@@ -16,8 +16,6 @@
 
 <h1></h1>
 
-<br>
-
 <p align="center">
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ES.md">Español 🇪🇸</a> |
   <a href="https://github.com/bastndev/fixnow/blob/main/public/docs/README_ZH.md">中文 🇨🇳</a> |
@@ -44,7 +42,6 @@
 - ⚡ **Slim Builds** — Import only the language you need (e.g. `import { check } from "fixnow/es"`) to optimize bundle size.
 - 🛡️ **Smart Tokenization** — Automatically ignores code spans, URLs, emails, and identifiers to prevent false positives.
 - 🧩 **Universal** — Works seamlessly in both ESM and CommonJS projects.
-
 
 ## Install
 
@@ -204,7 +201,8 @@ breaking change:
   `/skills #N`, and `/skill` no longer auto-skip. If you need them, pass them via
   `protectedSegments`:
   ```ts
-  const F1_MARKERS = /\[(?:Image|Code|Text) #\d+[^\]\n]*\]|\[Skills? #[^\]\n]+\]|\/skills #\d+|\/skill\b/g;
+  const F1_MARKERS =
+    /\[(?:Image|Code|Text) #\d+[^\]\n]*\]|\[Skills? #[^\]\n]+\]|\/skills #\d+|\/skill\b/g;
   await checkText(text, {
     language: "en",
     protectedSegments: [DEFAULT_PROTECTED_PATTERN, F1_MARKERS],
